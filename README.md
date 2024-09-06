@@ -34,10 +34,10 @@ conda activate rss_parser
 Run the script with:
 
 ```
-python rss_parser.py
+python main.py
 ```
 
-The script will run continuously, updating the database daily at midnight.
+The script will fetch the latest articles from Nature and bioRxiv RSS feeds and store them in the database.
 
 ## Database Schema
 
@@ -49,15 +49,19 @@ The script creates two tables in the DuckDB database:
 Both tables have the following schema:
 
 - `title`: VARCHAR
-- `publish_date`: TIMESTAMP
+- `publish_date`: DATE
 - `link`: VARCHAR
-- `identifier`: VARCHAR
+- `identifier`: VARCHAR UNIQUE
 - `content`: VARCHAR
 - `update_date`: DATE
 
-## Error Handling
+## Error Handling and Logging
 
-The script includes basic error handling and logging. Check the console output or log files for any issues.
+The script includes error handling and logging. It will log information about the parsing process, successful data storage, and any errors encountered. Check the console output for these logs.
+
+## Date Handling
+
+The script includes a `parse_date` function that validates the date format. If a date is invalid or missing, it will be stored as NULL in the database.
 
 ## Contributing
 
@@ -66,3 +70,15 @@ Feel free to fork this repository and submit pull requests with any improvements
 ## License
 
 This project is licensed under the MIT License.
+
+## Docker System
+```mermaid
+graph TD
+    A[Cron Job] -->|매일 2:00 PM| B(RSS Parser 실행)
+    B -->|Nature RSS 파싱| C[parse_rss]
+    B -->|bioRxiv RSS 파싱| D[parse_rss]
+    C --> E[store_in_duckdb]
+    D --> E
+    E -->|데이터 저장| F[(DuckDB)]
+    F -->|볼륨 마운트| G[호스트 시스템]
+```

@@ -1,4 +1,4 @@
-name: rss_parser
+name: paper-rss
 channels:
 - conda-forge
 - pkgs/main
@@ -11,6 +11,7 @@ dependencies:
 - certifi=2024.8.30=pyhd8ed1ab_0
 - cffi=1.17.1=py311hf29c0ef_0
 - charset-normalizer=3.3.2=pyhd8ed1ab_0
+- click=8.1.7=py311h06a4308_0
 - feedparser=6.0.11=pyhd8ed1ab_0
 - h2=4.1.0=pyhd8ed1ab_0
 - hpack=4.0.0=pyh9f0ad1d_0
@@ -35,6 +36,7 @@ dependencies:
 - pycparser=2.22=pyhd8ed1ab_0
 - pysocks=1.7.1=pyha2e5f31_6
 - python=3.11.9=hb806964_0_cpython
+- python-dotenv=0.21.0=py311h06a4308_0
 - python-duckdb=1.0.0=py311hf86e51f_0
 - python_abi=3.11=5_cp311
 - pytz=2024.1=py311h06a4308_0

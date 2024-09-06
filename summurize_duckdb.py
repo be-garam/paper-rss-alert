@@ -1,7 +1,12 @@
 import duckdb
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def view_table_content(table_name):
-    conn = duckdb.connect('rss_data.db')
+    db_path = os.getenv('DB_PATH', 'rss_data.db')
+    conn = duckdb.connect(db_path)
     result = conn.execute(f"SELECT * FROM {table_name}").fetchall()
     conn.close()
     return result
