@@ -10,10 +10,11 @@ In the context of this project, we use RSS feeds from Nature and bioRxiv to auto
 
 ## Features
 
-- Parses RSS feeds from Nature and bioRxiv
-- Stores article data in a DuckDB database
-- [ ] Updates the database daily
-- Handles errors and provides logging
+- [-]Parses RSS feeds from Nature and bioRxiv
+- [-]Stores article data in a DuckDB database
+- [-] Updates the database daily
+- [-]Handles errors and provides logging
+- [ ] maker alart system for new article base on keywords
 
 ## Installation
 1. Clone this repository
@@ -141,6 +142,9 @@ graph TD
     volumes:  
         - ./data:/app/data
     ```
+    - 호스트의 ./data 디렉토리 (현재 디렉토리의 data 폴더)가 컨테이너 내부의 /app/data 디렉토리에 마운트
+        - 컨테이너 내부에서 /app/data에 쓰여진 모든 데이터는 호스트의 ./data 폴더에 반영
+        - 반대로 호스트의 ./data 폴더에 추가된 모든 파일은 컨테이너 내부의 /app/data에서 접근 가능
 
 5. Logs
     - To view the logs:
