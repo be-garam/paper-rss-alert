@@ -10,10 +10,10 @@ In the context of this project, we use RSS feeds from Nature and bioRxiv to auto
 
 ## Features
 
-- [-]Parses RSS feeds from Nature and bioRxiv
-- [-]Stores article data in a DuckDB database
-- [-] Updates the database daily
-- [-]Handles errors and provides logging
+- [x]Parses RSS feeds from Nature and bioRxiv
+- [x]Stores article data in a DuckDB database
+- [x] Updates the database daily
+- [x]Handles errors and provides logging
 - [ ] maker alart system for new article base on keywords
 
 ## Installation
@@ -75,30 +75,30 @@ This project is licensed under the MIT License.
 ## Docker System
 ```mermaid
 graph TD
-    subgraph "Docker Container"
-        A[Cron Job] -->|매일 2:00 PM| B(RSS Parser 실행)
-        B -->|Nature RSS 파싱| C[parse_rss]
-        B -->|bioRxiv RSS 파싱| D[parse_rss]
+    subgraph DockerContainer
+        A[Cron Job] -->|Daily 2:00 PM| B(RSS Parser)
+        B -->|Nature RSS| C[parse_rss]
+        B -->|bioRxiv RSS| D[parse_rss]
         C --> E[store_in_duckdb]
         D --> E
-        E -->|데이터 저장| F[(DuckDB in /app/data)]
+        E -->|Save Data| F[(DuckDB)]
     end
 
-    subgraph "Host System"
-        G[./data Directory]
+    subgraph HostSystem
+        G[data Directory]
         H[Docker Image]
         I[Docker Compose]
     end
 
-    I -->|빌드 & 실행| H
-    H -->|생성| "Docker Container"
-    F <-->|볼륨 마운트| G
-    I -->|리소스 모니터링| J[docker stats]
+    I -->|Build and Run| H
+    H -->|Create| DockerContainer
+    F <--> G
+    I -->|Monitor| J[docker stats]
 
-    K[RSS Feeds] -->|HTTP 요청| B
-    
-    style "Docker Container" fill:#f0f0f0,stroke:#333,stroke-width:2px
-    style "Host System" fill:#e6f3ff,stroke:#333,stroke-width:2px
+    K[RSS Feeds] -->|HTTP Request| B
+
+    style DockerContainer fill:#f0f0f0,stroke:#333,stroke-width:2px
+    style HostSystem fill:#e6f3ff,stroke:#333,stroke-width:2px
 ```
 
 ### System Requirements
