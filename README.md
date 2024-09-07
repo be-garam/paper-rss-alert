@@ -74,11 +74,95 @@ This project is licensed under the MIT License.
 ## Docker System
 ```mermaid
 graph TD
-    A[Cron Job] -->|매일 2:00 PM| B(RSS Parser 실행)
-    B -->|Nature RSS 파싱| C[parse_rss]
-    B -->|bioRxiv RSS 파싱| D[parse_rss]
-    C --> E[store_in_duckdb]
-    D --> E
-    E -->|데이터 저장| F[(DuckDB)]
-    F -->|볼륨 마운트| G[호스트 시스템]
+    subgraph "Docker Container"
+        A[Cron Job] -->|매일 2:00 PM| B(RSS Parser 실행)
+        B -->|Nature RSS 파싱| C[parse_rss]
+        B -->|bioRxiv RSS 파싱| D[parse_rss]
+        C --> E[store_in_duckdb]
+        D --> E
+        E -->|데이터 저장| F[(DuckDB in /app/data)]
+    end
+
+    subgraph "Host System"
+        G[./data Directory]
+        H[Docker Image]
+        I[Docker Compose]
+    end
+
+    I -->|빌드 & 실행| H
+    H -->|생성| "Docker Container"
+    F <-->|볼륨 마운트| G
+    I -->|리소스 모니터링| J[docker stats]
+
+    K[RSS Feeds] -->|HTTP 요청| B
+    
+    style "Docker Container" fill:#f0f0f0,stroke:#333,stroke-width:2px
+    style "Host System" fill:#e6f3ff,stroke:#333,stroke-width:2px
 ```
+
+### System Requirements
+
+- Ubuntu 22.04.1 LTS
+- NVIDIA GPU (preferably NVIDIA A100)
+- CUDA Version: 12.4
+- Driver Version: 550.90.07
+- Rootless Docker
+
+### Docker Usage and Installation
+1. docker start(rootless docker)
+    ```bash
+    systemctl start docker --user
+    ```
+
+1. Build the Docker image:
+   ```bash
+   docker build -t rss_parser .
+   ```
+
+2. Start the container:
+   ```bash
+   docker compose up -d
+   ```
+
+3. The RSS parser will run automatically at 2:00 PM daily. To manually trigger the parser:
+    ```bash
+    docker exec rss_parser /bin/bash -c "source activate rss_parser && python /app/main.py"
+    ```
+
+4. check the docker stats
+    ```bash
+    docker stats rss_parser
+    ```
+
+4. Accessing the Database
+    - The DuckDB database is stored in the `./data` directory on your host system. You can access it using the DuckDB CLI or any DuckDB-compatible tool.
+    - description for my personal understanding
+    ```yml
+    volumes:  
+        - ./data:/app/data
+    ```
+
+5. Logs
+    - To view the logs:
+    ```bash
+    docker compose logs rss_parser
+    ```
+
+6. Stopping the Container
+    - To stop the container:
+    ```bash
+    docker compose down
+    ```
+
+7. Development
+    - For development purposes, you can access the running container:
+    ```bash
+    docker exec -it rss_parser /bin/bash
+    ```
+## Contributing
+
+Feel free to fork this repository and submit pull requests with any improvements.
+
+## License
+
+This project is licensed under the MIT License.

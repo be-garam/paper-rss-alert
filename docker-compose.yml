@@ -5,11 +5,6 @@ services:
     volumes:
       - ./data:/app/data
     environment:
-      - NVIDIA_VISIBLE_DEVICES=0
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
+      - NATURE_RSS_URL=https://www.nature.com/nature.rss
+      - BIORXIV_RSS_URL=http://connect.biorxiv.org/biorxiv_xml.php?subject=all
+    restart: unless-stopped
